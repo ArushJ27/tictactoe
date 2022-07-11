@@ -3,6 +3,7 @@ package cs;
 import java.util.*;
 
 public class Tic_Tac_Toe {
+	private ArrayList<String[]> boardChanges;
 	private Scanner scan;
 	private char[][] board;
 	private int[][] playerRows;
@@ -10,7 +11,14 @@ public class Tic_Tac_Toe {
 	private int[][] playerDia;
 	private int turnNumber;
 	boolean hasWinner;
-
+	public Tic_Tac_Toe(String moves){
+		boardChanges = new ArrayList<String[]>();
+		String[] moveConvert = moves.split(" ");
+		for(String s : moveConvert) {
+			boardChanges.add(s.split(","));
+		}
+		
+	}
 	public Tic_Tac_Toe() {
 		board = new char[3][3];
 		for (char[] c : board)
@@ -21,13 +29,22 @@ public class Tic_Tac_Toe {
 		turnNumber = 0;
 		scan = new Scanner(System.in);
 		hasWinner = false;
+		boardChanges = new ArrayList<String[]>();
 		play();
+	}
+	
+	public String getSteps() {
+		String s = "";
+		 for(String[] i: boardChanges) {
+			 s+=i[0]+","+i[1]+" ";
+		 }
+		 return s;
 	}
 
 	/**
 	 * 
 	 */
-	public void play() {
+	private void play() {
 		printBoard();
 		while (turnNumber < 9) {
 
@@ -46,11 +63,11 @@ public class Tic_Tac_Toe {
 	/**
 	 * updates the board after every turn
 	 */
-	public void updateBoard() {
+	private void updateBoard() {
 		// checks who's turn it is
 		int playerNum = turnNumber % 2;
-		System.out.print("<Player" + (playerNum+1) + "> Enter a empty cell (row, col): ");
-		
+		System.out.print("<Player" + (playerNum + 1) + "> Enter a empty cell (row, col): ");
+
 		try {
 			// get input and turns them into rows and columns
 			String s = scan.nextLine().trim();
@@ -81,13 +98,14 @@ public class Tic_Tac_Toe {
 			if (row + col == 2) {
 				playerDia[playerNum][1]++;
 			}
-			
-			//check if we have winner
+
+			// check if we have winner
 			if (playerRows[playerNum][row] == 3 || playerCol[playerNum][col] == 3 || playerDia[playerNum][0] == 3
 					|| playerDia[playerNum][1] == 3) {
-				System.out.println("Player "+(playerNum + 1) + " is the winner");
+				System.out.println("Player " + (playerNum + 1) + " is the winner");
 				hasWinner = true;
 			}
+			boardChanges.add(index);
 
 		}
 		// in case any user error
@@ -99,11 +117,32 @@ public class Tic_Tac_Toe {
 	}
 
 	// prints board
-	public void printBoard() {
+	private void printBoard() {
 		for (char[] c : board) {
 			System.out.println(Arrays.toString(c));
 		}
-		
+
 	}
 
+	void boardReview() {
+		char[][] board;
+		board = new char[3][3];
+		for (char[] c : board)
+			Arrays.fill(c, ' ');
+		for (int i = 0; i < boardChanges.size(); i++) {
+			int row = Integer.parseInt(boardChanges.get(i)[0].trim()) - 1;
+			int col = Integer.parseInt(boardChanges.get(i)[1].trim()) - 1;
+			int playerTurn = (i % 2);
+			if (playerTurn == 0) {
+				board[row][col] = 'X';
+			} else {
+				board[row][col] = 'O';
+			}
+			for (char[] c : board) {
+				System.out.println(Arrays.toString(c));
+
+			}
+			System.out.println("");
+		}
+	}
 }
